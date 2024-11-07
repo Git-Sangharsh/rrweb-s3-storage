@@ -1,5 +1,5 @@
 // Basic example of using rrweb record and rrweb-player with React.
-// 
+//
 // We provide two screens, one with some example elements to interact with,
 // and one which provides a list of recordings to play back. Recordings are
 // defined as a list of events that are grouped by a session ID. Events are
@@ -23,14 +23,16 @@ import { useRef, useEffect, useState } from 'react';
 import { v4 } from 'uuid';
 import { HashRouter, Routes, Route, Link, useParams, Navigate } from "react-router-dom";
 import html2canvas from 'html2canvas';
+import "./components/integration.js";
 
-const API_ROOT = 'https://5c39zvs723.execute-api.us-east-1.amazonaws.com/prod/'
+const API_ROOT = 'https://5c39zvs723.execute-api.us-east-1.amazonaws.com/prod/';
 
 
 function App() {
   // At the top level, we use React router to provide two screens, one for
   // the example elements and rrweb recording (RRWebRecordedPage), and one for
   // the recordings list and playback (RecordingsListPage).
+
   return (
     <HashRouter>
       <Routes>
@@ -50,7 +52,8 @@ const RRWebRecordedPage = () => {
   // order, we prefix the sessionID with the current timestamp in an iso1806
   // format to it's not too hard to find the most recent session ID. We use a
   // ref to store the session ID so that it doesn't change on re-renders.
-  const sessionId = useRef(`${new Date().toISOString()}-${v4()}`);
+  const
+  sessionId = useRef(`${new Date().toISOString()}-${v4()}`);
   const counterRef = useRef(0);
 
   // Start rrweb recording on load.
@@ -60,6 +63,8 @@ const RRWebRecordedPage = () => {
     // screenshot field. We base64 encode the screenshot and send it as a string
     // to the backend. we use html2canvas to take the screenshot. We downsample
     // to 400px wide to save on bandwidth.
+    console.log("Start rrweb recording on load...");
+    console.log(`session is now: ${sessionId.current}`)
     html2canvas(document.body).then((canvas) => {
       const screenshot = canvas.toDataURL('image/jpeg', 0.1);
 
@@ -75,7 +80,6 @@ const RRWebRecordedPage = () => {
         })
       });
     })
-
     rrweb.record({
       async emit(event) {
         // Persist the event.
@@ -140,6 +144,7 @@ const useRecordings = (): { recordings: Recordings } => {
   // Query /recordings/ to get the list of recordings.
   const [recordings, setRecordings] = useState<Recordings>({ Items: [] });
 
+  console.log("Recording State is ", recordings)
   useEffect(() => {
     fetch(`${API_ROOT}/recordings/`)
       .then((response) => response.json())
@@ -157,8 +162,8 @@ const useRecordingEvents = (sessionId: string) => {
 
   useEffect(() => {
     // We get JSONL back from the endpoint, pull out each rrwebEvent from each
-    // line and create an array of them. There may be no events at all, in which 
-    // case we want to set the loading state to true and poll until there are 
+    // line and create an array of them. There may be no events at all, in which
+    // case we want to set the loading state to true and poll until there are
     // events.
     const getEvents = () => {
       fetch(`${API_ROOT}/recordings/${sessionId}/events`)

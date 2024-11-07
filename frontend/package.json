@@ -10,14 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.685.0",
+    "crypto-js": "^4.2.0",
     "html2canvas": "^1.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.14.1",
     "react-router-dom": "^6.14.1",
+    "recordings": "github:hazzadous/rrweb-s3-storage",
     "rrweb": "2.0.0-alpha.4",
     "rrweb-player": "1.0.0-alpha.4",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.14",
